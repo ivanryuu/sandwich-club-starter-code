@@ -3,7 +3,10 @@ package com.udacity.sandwichclub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -43,7 +46,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
@@ -56,7 +59,28 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    private void populateUI(Sandwich sandwich) {
+        populateTV(R.id.also_known_label_tv, R.id.also_known_tv,
+                TextUtils.join(", ", sandwich.getAlsoKnownAs().toArray()));
 
+        populateTV(R.id.origin_label_tv, R.id.origin_tv, sandwich.getPlaceOfOrigin());
+
+        populateTV(R.id.description_label_tv, R.id.description_tv, sandwich.getDescription());
+
+        populateTV(R.id.ingredients_label_tv, R.id.ingredients_tv,
+                TextUtils.join("\n", sandwich.getIngredients().toArray()));
+    }
+
+    private void populateTV(int labelId, int valueId, String text) {
+        TextView labelTV = findViewById(labelId);
+        TextView valueTV = findViewById(valueId);
+        if (TextUtils.isEmpty(text)) {
+            labelTV.setVisibility(View.GONE);
+            valueTV.setVisibility(View.GONE);
+        } else {
+            labelTV.setVisibility(View.VISIBLE);
+            valueTV.setVisibility(View.VISIBLE);
+            valueTV.setText(text);
+        }
     }
 }
