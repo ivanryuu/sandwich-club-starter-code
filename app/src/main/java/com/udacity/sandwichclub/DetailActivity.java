@@ -13,17 +13,35 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+
+    @BindView(R.id.description_tv)
+    TextView descriptionTV;
+
+    @BindView(R.id.origin_tv)
+    TextView originTV;
+
+    @BindView(R.id.also_known_tv)
+    TextView alsoKnownAsTV;
+
+    @BindView(R.id.ingredients_tv)
+    TextView ingredientsTV;
+
+    @BindView(R.id.image_iv)
+    ImageView ingredientsIv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ImageView ingredientsIv = findViewById(R.id.image_iv);
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -49,6 +67,7 @@ public class DetailActivity extends AppCompatActivity {
         populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
+                .placeholder(R.drawable.placeholder)
                 .into(ingredientsIv);
 
         setTitle(sandwich.getMainName());
@@ -60,27 +79,19 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(Sandwich sandwich) {
-        populateTV(R.id.also_known_label_tv, R.id.also_known_tv,
-                TextUtils.join(", ", sandwich.getAlsoKnownAs().toArray()));
+        populateTV(alsoKnownAsTV, TextUtils.join(", ", sandwich.getAlsoKnownAs().toArray()));
 
-        populateTV(R.id.origin_label_tv, R.id.origin_tv, sandwich.getPlaceOfOrigin());
+        populateTV(originTV, sandwich.getPlaceOfOrigin());
 
-        populateTV(R.id.description_label_tv, R.id.description_tv, sandwich.getDescription());
+        populateTV(descriptionTV, sandwich.getDescription());
 
-        populateTV(R.id.ingredients_label_tv, R.id.ingredients_tv,
-                TextUtils.join("\n", sandwich.getIngredients().toArray()));
+        populateTV(ingredientsTV, TextUtils.join("\n", sandwich.getIngredients().toArray()));
     }
 
-    private void populateTV(int labelId, int valueId, String text) {
-        TextView labelTV = findViewById(labelId);
-        TextView valueTV = findViewById(valueId);
+    private void populateTV(TextView textView, String text) {
         if (TextUtils.isEmpty(text)) {
-            labelTV.setVisibility(View.GONE);
-            valueTV.setVisibility(View.GONE);
-        } else {
-            labelTV.setVisibility(View.VISIBLE);
-            valueTV.setVisibility(View.VISIBLE);
-            valueTV.setText(text);
+            text = getResources().getString(R.string.no_data_message);
         }
+        textView.setText(text);
     }
 }

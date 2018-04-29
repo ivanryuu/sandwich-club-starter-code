@@ -16,11 +16,11 @@ public class JsonUtils {
             JSONObject obj = new JSONObject(json);
             JSONObject name = obj.getJSONObject("name");
             return new Sandwich(
-                    name.getString("mainName"),
+                    name.optString("mainName"),
                     GetStringList(name, "alsoKnownAs"),
-                    obj.getString("placeOfOrigin"),
-                    obj.getString("description"),
-                    obj.getString("image"),
+                    obj.optString("placeOfOrigin"),
+                    obj.optString("description"),
+                    obj.optString("image"),
                     GetStringList(obj, "ingredients"));
         } catch(Throwable t) {
             return null;
@@ -32,7 +32,7 @@ public class JsonUtils {
             JSONArray jsonArray = obj.getJSONArray(name);
             List<String> list = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
-                list.add(jsonArray.getString(i));
+                list.add(jsonArray.optString(i));
             }
             return list;
         } catch(JSONException e) {
